@@ -1,0 +1,10 @@
+hosts:
+  - name: default
+    host: 127.0.0.1
+    port: 6379
+    auth:
+    db: 1
+    minIdle: 10
+    maxIdle: 64
+    timeout: 300
+    prefix: frame:dev

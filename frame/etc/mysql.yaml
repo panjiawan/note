@@ -1,0 +1,11 @@
+hosts:
+  - name: default
+    debug: TRUE
+    host: localhost
+    port: 3307
+    username: root
+    password: a123456
+    db: frame
+    prefix: ""
+    maxIdle: 64
+    maxOpen: 1024

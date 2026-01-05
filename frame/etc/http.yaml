@@ -1,0 +1,8 @@
+enableDebug: TRUE
+enableStdout: TRUE
+https: FALSE
+httpsCertFile: ""
+httpsKeyFile: ""
+httpPort: 8880
+rateLimitPerSec: 500
+rateLimitCapacity: 2000

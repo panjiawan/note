@@ -27,7 +27,6 @@ go.work
 
 vendor/
 dev_tool/
-etc/
 build/*
 
 dump.rdb
