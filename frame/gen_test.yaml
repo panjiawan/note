@@ -1,0 +1,51 @@
+config:
+  tag_json_camel: lower # lower 首字母小写驼峰，upper 首字母大写驼峰
+relation:
+  - table: club
+    column:
+      # 定义 club 表中的 content 字段为 json 类型，类型必须以 Option 结尾
+      # 查询和插入时会自动做 json 数据解析
+      # 指定 ClubContentOption 类型，必须事先定义在 accessor(与 dao 同级)目录中
+      # 并且该类型必须可外部访问
+      content:
+        serializer: json
+        type: ClubContentOption
+        tag:
+          gorm:
+            default: "''"
+      # 指定自定义类型字段，需要自己实现 scan 和 value 方法
+      api_info:
+        type: ClubApiInfoOption
+
+    # club_user 表中的 club_id 对应 club 表中的 id
+    # club 表中的 applicant_id 对应 user 表中的 id
+    relate:
+      - table: club_user
+        foreign_key: club_id
+        type: has_many
+      - table: user
+        references: applicant_id
+        foreign_key: id
+        type: belongs_to
+  - table: user
+    relate:
+      - table: user_oauth
+        foreign_key: user_id
+        type: has_one
+  - table: tag_formula
+  - table: formula
+    # formula表关联tag表，多对多关系，中间表为 tag_formula表。
+    # formula表中的id对应tag_formula中的formula_id
+    # tag表中的id对应 tag_formula表中的 tag_id
+    relate:
+      - table: tag
+        many_2_many: tag_formula
+        foreign_key: id
+        join_foreign_key: formula_id
+        join_references: tag_id
+        references: id
+        type: many_many
+  - table: club_user
+    column:
+      delete_time:
+        type: gorm.DeletedAt

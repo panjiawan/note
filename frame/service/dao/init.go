@@ -2,6 +2,7 @@ package dao
 
 import (
 	"FRAME/conf"
+	"FRAME/service/dao/query"
 	"fmt"
 	"github.com/panjiawan/go-lib/pkg/plog"
 	"github.com/panjiawan/go-lib/pkg/pmysql"

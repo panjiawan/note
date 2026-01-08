@@ -2,7 +2,7 @@ hosts:
   - name: default
     host: 127.0.0.1
     port: 6379
-    auth:
+    auth: aVnJ5!OouUAXTgE_
     db: 1
     minIdle: 10
     maxIdle: 64

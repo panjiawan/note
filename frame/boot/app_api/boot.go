@@ -2,6 +2,8 @@ package app_api
 
 import (
 	"FRAME/conf"
+	"FRAME/service/app_api/router"
+	"FRAME/service/dao"
 	"github.com/panjiawan/go-lib/pkg/plog"
 )
 
@@ -27,7 +29,7 @@ func Start(etcPath string, logPath string) {
 	go closeSignalListen()
 
 	plog.Info("conf started")
-	model.Run(confHandle.GetMysqlConf(), confHandle.GetRedisConf())
+	dao.Run()
 	plog.Info("model started")
 	route := router.New(confHandle.GetHttpConf())
 	route.Run()

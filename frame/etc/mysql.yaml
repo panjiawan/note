@@ -2,10 +2,10 @@ hosts:
   - name: default
     debug: TRUE
     host: localhost
-    port: 3307
+    port: 3306
     username: root
-    password: a123456
-    db: frame
+    password: a17bdf010ae88d44
+    db: frame_dev
     prefix: ""
     maxIdle: 64
     maxOpen: 1024
