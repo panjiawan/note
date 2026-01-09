@@ -5,10 +5,12 @@ import (
 	"FRAME/service/app_api/code"
 	"FRAME/service/app_api/internal"
 	"FRAME/service/app_api/middleware"
+	"fmt"
 	"github.com/panjiawan/go-lib/pkg/phttp"
 	"github.com/panjiawan/go-lib/pkg/plog"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
+	"runtime/debug"
 )
 
 type HttpRouter struct {
@@ -56,6 +58,12 @@ func (h *HttpRouter) Register() {
 }
 
 func (h *HttpRouter) PrepareCall(ctx *fasthttp.RequestCtx) {
+	defer func() {
+		if e := recover(); e != nil {
+			plog.Error("panic prepareCall", zap.Error(fmt.Errorf("%v", e)), zap.String("trace", string(debug.Stack())))
+		}
+	}()
+
 	h.options(ctx)
 	path := string(ctx.URI().Path())
 	method := string(ctx.Request.Header.Method())
