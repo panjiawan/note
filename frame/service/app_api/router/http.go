@@ -20,6 +20,7 @@ type HttpRouter struct {
 
 type routerMethod struct {
 	Handle func(ctx *fasthttp.RequestCtx)
+	Method string
 	Filter bool
 }
 
@@ -45,15 +46,20 @@ func (h *HttpRouter) Run() {
 }
 
 func (h *HttpRouter) Register() {
-	for path := range getHandleList {
-		h.handle.Register(path, phttp.MethodGet, h.PrepareCall)
-		plog.Info("register", zap.String("path", path), zap.String("method", phttp.MethodGet))
-
-	}
-
-	for path := range postHandleList {
-		h.handle.Register(path, phttp.MethodPost, h.PrepareCall)
-		plog.Info("register", zap.String("path", path), zap.String("method", phttp.MethodPost))
+	//for path := range getHandleList {
+	//	h.handle.Register(path, phttp.MethodGet, h.PrepareCall)
+	//	plog.Info("register", zap.String("path", path), zap.String("method", phttp.MethodGet))
+	//
+	//}
+	//
+	//for path := range postHandleList {
+	//	h.handle.Register(path, phttp.MethodPost, h.PrepareCall)
+	//	plog.Info("register", zap.String("path", path), zap.String("method", phttp.MethodPost))
+	//}
+	parseGroup()
+	for path, v := range routesList {
+		h.handle.Register(path, v.Method, h.PrepareCall)
+		plog.Info("register", zap.String("path", path), zap.String("method", v.Method))
 	}
 }
 
@@ -66,29 +72,41 @@ func (h *HttpRouter) PrepareCall(ctx *fasthttp.RequestCtx) {
 
 	h.options(ctx)
 	path := string(ctx.URI().Path())
-	method := string(ctx.Request.Header.Method())
+	//method := string(ctx.Request.Header.Method())
 
-	if method == "GET" {
-		if _, ok := getHandleList[path]; ok {
-			if getHandleList[path].Filter {
-				if outputCode := h.Filter(ctx); outputCode != code.Success {
-					internal.OutputError(ctx, outputCode)
-					return
-				}
+	if _, ok := routesList[path]; ok {
+		if routesList[path].Filter {
+			if outputCode := h.Filter(ctx); outputCode != code.Success {
+				internal.OutputError(ctx, outputCode)
+				return
 			}
-			getHandleList[path].Handle(ctx)
 		}
-	} else if method == "POST" {
-		if _, ok := postHandleList[path]; ok {
-			if postHandleList[path].Filter {
-				if outputCode := h.Filter(ctx); outputCode != code.Success {
-					internal.OutputError(ctx, outputCode)
-					return
-				}
-			}
-			postHandleList[path].Handle(ctx)
-		}
+		routesList[path].Handle(ctx)
 	}
+
+	/*
+		if method == "GET" {
+			if _, ok := getHandleList[path]; ok {
+				if getHandleList[path].Filter {
+					if outputCode := h.Filter(ctx); outputCode != code.Success {
+						internal.OutputError(ctx, outputCode)
+						return
+					}
+				}
+				getHandleList[path].Handle(ctx)
+			}
+		} else if method == "POST" {
+			if _, ok := postHandleList[path]; ok {
+				if postHandleList[path].Filter {
+					if outputCode := h.Filter(ctx); outputCode != code.Success {
+						internal.OutputError(ctx, outputCode)
+						return
+					}
+				}
+				postHandleList[path].Handle(ctx)
+			}
+		}
+	*/
 }
 
 func (h *HttpRouter) options(ctx *fasthttp.RequestCtx) {
